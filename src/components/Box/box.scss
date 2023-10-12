@@ -1,0 +1,17 @@
+@import "../../assets/colors";
+
+.box {
+  padding: 40px;
+  border-radius: 12px;
+  background: $white;
+  box-shadow: 0 5px 20px 20px $black-03;
+
+  &__title {
+    display: block;
+    color: $black;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 22px;
+    margin-bottom: 8px;
+  }
+}
