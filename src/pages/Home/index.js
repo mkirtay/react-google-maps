@@ -2,18 +2,20 @@ import {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import React from 'react';
 import Select from 'react-select';
-import {GoogleMap, useJsApiLoader, Polygon, LoadScript, Polyline, Marker} from '@react-google-maps/api';
+import {GoogleMap, useJsApiLoader, Polygon, Polyline, Marker} from '@react-google-maps/api';
 import {Box} from "../../components";
 
-/*import { Select } from "../../components";*/
 import {regionAction} from "../../store/slices/Region/actions";
 import {regionDetailAction} from "../../store/slices/RegionDetail/actions";
 import {routeAction} from "../../store/slices/Route/actions";
 
+import './home.scss';
+
 
 const containerStyle = {
     width: '100%',
-    height: '600px'
+    minHeight: '100vh',
+    height: '100%'
 };
 
 const Home = () => {
@@ -42,7 +44,7 @@ const Home = () => {
         dispatch(regionAction())
         const firstRegion = {value: 'region1', label: 'Davutpaşa'}
 
-        if ( !localStorage.getItem("region") ) {
+        if (!localStorage.getItem("region")) {
             const objectString = JSON.stringify(firstRegion);
             localStorage.setItem("region", objectString)
             dispatch(regionDetailAction(firstRegion.value))
@@ -64,7 +66,6 @@ const Home = () => {
     useEffect(() => {
         const timer = setInterval(() => {
             setIndex(prevIndex => {
-                /*const nextIndex = (prevIndex + 1) % routePolyline?.length;*/
                 const nextIndex = Number(prevIndex) + 1;
                 localStorage.setItem('selectedPlace', nextIndex)
                 if (nextIndex === routePolyline?.length) {
@@ -79,65 +80,55 @@ const Home = () => {
         return () => clearInterval(timer);
     }, [routePolyline]);
 
-    useEffect(() => {
-        const savedIndex = localStorage.getItem('selectedPlace');
-        console.log(savedIndex, 'saved')
-    }, []);
-
-
     return <div className="home">
-        <div className="container">
-            <Box title="Bölge">
-                <Select value={selectedOption}
-                        onChange={onChangeSelect}
-                        options={regions}
+        <Box title="Bölge">
+            <Select value={selectedOption}
+                    onChange={onChangeSelect}
+                    options={regions}
+            />
+        </Box>
+
+        {isLoaded ? (
+            <GoogleMap
+                mapContainerStyle={containerStyle}
+                center={regionDetailCenter}
+                zoom={15}
+            >
+                <Polygon
+                    paths={regionPolygon}
+                    options={{
+                        fillColor: "#000",
+                        fillOpacity: 0.35,
+                        strokeColor: "rgba(0,0,0, 0.4)",
+                        strokeOpacity: 1,
+                        strokeWeight: 2,
+                    }}
                 />
-            </Box>
-            <>
-               {/* {console.log(regionPolygon, 'regionPolygon')}*/}
-            </>
-            {isLoaded ? (
-                <GoogleMap
-                    mapContainerStyle={containerStyle}
-                    center={regionDetailCenter}
-                    zoom={12}
-                >
-                    <Polygon
-                        paths={regionPolygon}
-                        options={{
-                            fillColor: "#000",
-                            fillOpacity: 0.35,
-                            strokeColor: "rgba(0,0,0, 0.4)",
-                            strokeOpacity: 1,
-                            strokeWeight: 2,
-                        }}
-                    />
-                    <Marker position={routePolyline?.at(index)}
-                            ref={markerRef}
-                            icon='./images/courier-marker.png'
-                    />
-                    <Marker position={routePolyline?.at(-1)}
-                            icon='./images/home-marker.png'
-                    />
-                    <Polyline
-                        path={routePolyline}
-                        options={{
-                            strokeColor: '#11a1ef',
-                            strokeOpacity: 1,
-                            strokeWeight: 8,
-                            fillColor: '#11a1ef',
-                            fillOpacity: 1,
-                            clickable: false,
-                            draggable: false,
-                            editable: false,
-                            visible: true,
-                            radius: 0,
-                            zIndex: 1,
-                        }}
-                    />
-                </GoogleMap>
-            ) : <h1>...Loading</h1>}
-        </div>
+                <Marker position={routePolyline?.at(index)}
+                        ref={markerRef}
+                        icon='./images/courier-marker.png'
+                />
+                <Marker position={routePolyline?.at(-1)}
+                        icon='./images/home-marker.png'
+                />
+                <Polyline
+                    path={routePolyline}
+                    options={{
+                        strokeColor: '#11a1ef',
+                        strokeOpacity: 1,
+                        strokeWeight: 8,
+                        fillColor: '#11a1ef',
+                        fillOpacity: 1,
+                        clickable: false,
+                        draggable: false,
+                        editable: false,
+                        visible: true,
+                        radius: 0,
+                        zIndex: 1,
+                    }}
+                />
+            </GoogleMap>
+        ) : <h1>...Loading</h1>}
     </div>
 }
 
