@@ -10,6 +10,7 @@ import {regionDetailAction} from "../../store/slices/RegionDetail/actions";
 import {routeAction} from "../../store/slices/Route/actions";
 
 import './home.scss';
+import {polygonOptions, polylineOptions} from "../../utilities/options";
 
 
 const containerStyle = {
@@ -87,7 +88,6 @@ const Home = () => {
                     options={regions}
             />
         </Box>
-
         {isLoaded ? (
             <GoogleMap
                 mapContainerStyle={containerStyle}
@@ -96,13 +96,7 @@ const Home = () => {
             >
                 <Polygon
                     paths={regionPolygon}
-                    options={{
-                        fillColor: "#000",
-                        fillOpacity: 0.35,
-                        strokeColor: "rgba(0,0,0, 0.4)",
-                        strokeOpacity: 1,
-                        strokeWeight: 2,
-                    }}
+                    options={polygonOptions}
                 />
                 <Marker position={routePolyline?.at(index)}
                         ref={markerRef}
@@ -113,19 +107,7 @@ const Home = () => {
                 />
                 <Polyline
                     path={routePolyline}
-                    options={{
-                        strokeColor: '#11a1ef',
-                        strokeOpacity: 1,
-                        strokeWeight: 8,
-                        fillColor: '#11a1ef',
-                        fillOpacity: 1,
-                        clickable: false,
-                        draggable: false,
-                        editable: false,
-                        visible: true,
-                        radius: 0,
-                        zIndex: 1,
-                    }}
+                    options={polylineOptions}
                 />
             </GoogleMap>
         ) : <h1>...Loading</h1>}
