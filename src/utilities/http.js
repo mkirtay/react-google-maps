@@ -9,7 +9,7 @@ export const http = async (type, endpoint, data) => {
                 "Content-Type": "application/json",
                 "withCredentials": true,
                 "x-api-key" : "Y2FuZGlkYXRlOkNFODIyN0xEOGFLODJiMWY1ODc2NzNSMEdmMw==",
-                "x-force-correct": '1',
+                "x-force-correct": '0',
             },
             ...data
         })
